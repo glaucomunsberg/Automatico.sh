@@ -1,0 +1,71 @@
+Versão 1.0
+		Correções
+			Interação com o usuário
+			Teste de comportamento
+		
+Versão 0.9.8
+		Implementação
+			Função exclusiva para leitura de user/project
+		Correções
+			Testes de comportamento
+			De comentários internos ao código
+			Correção da Chamada de função
+			Pull corrigido
+			
+Versão 0.9.7
+		Implementação
+			Funções implementadas no top-down para o automatico.sh
+			
+Versão 0.9.6
+		Correções
+			De interação e escrita do automatico.sh
+			
+Versão 0.9.5
+		Implementação
+			Criação do automatico.sh
+		Correções
+			De interface
+			Na escolha entre menu do creator ou automatico
+			
+Versão 0.9
+		Implementação
+			Configuração do projeto e suas dependências
+		Correções
+			Interação com o usuário
+			Informações printadas na tela
+			
+Versão 0.8
+		Implementação
+			Pull
+			Leitura de User e Projeto
+			SSH
+			Git Remove
+			Git Status
+		Correções
+			Interface polida
+			
+Versão 0.7
+		Implementação
+			Novo modelo (Para saber mais vá a Wiki)
+			Criação da lógica
+			Sobre o projeto
+			Leitura de User/Projeto
+			Push
+			
+Versão 0.6
+		Implementação
+			Mudar nome do projeto
+		Correções
+			De interface
+
+Versão 0.5 ~
+		Observação
+			O repositório foi deletado acidentalmente e portando apenas contém apartir da versão 1.0
+			
+Versão 0.0 - 0.5
+		Implementação
+			A implementação se deu de forma pulverizada nos demais projetos, visando apenas o simples auxílio.
+			Ao chegar a versão 0.5 encontra um novo desafio em se desenvolver de forma a dar maior suporte.
+
+° We have a problem Houston?!
+	None.
