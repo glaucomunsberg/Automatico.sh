@@ -1,3 +1,9 @@
+Versão 1.0.1
+		Implementação
+			Git Add
+		Correções
+			Menu de ferramentas não escolhia corretamente
+			
 Versão 1.0
 		Correções
 			Interação com o usuário
@@ -58,14 +64,12 @@ Versão 0.6
 		Correções
 			De interface
 
-Versão 0.5 ~
-		Observação
+
+° Observação
 			O repositório foi deletado acidentalmente e portando apenas contém apartir da versão 1.0
-			
-Versão 0.0 - 0.5
-		Implementação
-			A implementação se deu de forma pulverizada nos demais projetos, visando apenas o simples auxílio.
-			Ao chegar a versão 0.5 encontra um novo desafio em se desenvolver de forma a dar maior suporte.
+			A implementação  da versão  0.1 a 0.5  se deu de forma  pulverizada nos demais projetos, 
+				visando apenas o simples auxílio. Ao chegar a versão 0.5 encontra um novo desafio em
+				se desenvolver de forma a dar maior suporte e incorporando outras funcionalidades.
 
 ° We have a problem Houston?!
 	None.

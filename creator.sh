@@ -397,6 +397,21 @@ function git_test()
 	read nada
 }
 
+function git_add()
+{
+	# Função que adiciona os arquivos escolhidos nomeados pelo usuário
+	
+	clear
+	cabeca
+	echo "- Digite os arquivos que deseja adicionar:              -"
+	read adicionar
+	sudo git add ${adicionar}
+	echo "---------------------------------------------------------"
+	echo "- Commit para que adicione os arquivos                  -"
+	echo "---------------------------------------------------------"
+	read nada
+}
+
 function git_status()
 {
 	# Função de status do estado que se encontra os arquivo em relação
@@ -422,11 +437,13 @@ function ferramentas()
 	echo "- 1. Git Remove                                         -"
 	echo "- 2. Git Status                                         -"
 	echo "- 3. Git Test                                           -"
+	echo "- 4. Git Add                                            -"
 	read nada
-	case $commit in
+	case $nada in
 		1) git_remove;;
 		2) git_status;;
 		3) git_test;;
+		4) git_add;;
 	esac
 }
 
