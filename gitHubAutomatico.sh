@@ -379,7 +379,7 @@ function git_push()
 	nome=$(zenity --title "${titulo}" --entry --text "Insira o nome para o seu commit" --entry-text="versao")
 	git commit -m ${nome// /_};
 	echo "GitHubAutomatico - Commitando os arquivos..."
-	git push origin master >> .log.txt
+	echo git push origin master >> .log.txt
 }
 
 function git_pull()
