@@ -1,10 +1,16 @@
 #!/bin/bash
 
+#	Para maiores informações sobre o arquivo leia
+#		documentacao.txt
+#
+#	Para maiores informações sobre as versões leia
+#		REAME
+#
 #	Você queria executar e não estar vendo esse código?!
 #	  Então abra seu terminal e digite
 #
-# 		$ sudo chmod +x creator.sh
-#		$ sudo ./creator
+# 		$ sudo chmod +x gitHubAutomatico.sh
+#		$ sudo bash gitHubAutomatico.sh
 #
 #	Você queria mesmo ver o código?!
 #	  Bem-vindo ao código criado para automatizar o processo do GitHub
@@ -12,16 +18,83 @@
 
 
 #--- Identificadores
-
-version="0.9"         	#Versão do GitHub Creator
-lido=0                	#Verifica se já foi lido o nome do usuário e do projeto
-exec="Y"         	    #Garante que haverá a execução do programa mesmo existindo o automatico.
+arrayConfig=("0.9" "creator.sh" "Y" "0" "titulo" "" "")
+version="0.9"         	# Versão do GitHub Creator
+lido=0                	# Verifica se já foi lido o nome do usuário e do projeto
+exec="Y"         	#Garante que haverá a execução do programa mesmo existindo o automatico.
 autoself="0"	        #Esse identificador identifica se é o Creator ou Automatico
-#user                   #Descomentado no Automatico.sh para conter o nome do usuário do Github
-#project			    #Desbloqueado no Automatico.sh para conter o nome do projeto do Github
+titulo="titulo"		#Titulo do programa
+#	user			#Descomentado no Automatico.sh para conter o nome do usuário do Github
+#	project			#Desbloqueado no Automatico.sh para conter o nome do projeto do Github
 
 #---------------------------------------------------------------------------------------------
 #---------------------------------------- Funções --------------------------------------------
+
+
+
+function zenity_esta_instalado()
+{	
+	#Função que verifica se o Zenity está instado no sistema caso não encontre
+	#	vai tentar instalar com o consentimento do usuário
+	
+	echo "|--- Verificando se o zenity está instado no seus sistema..."
+	dpkg -l | grep zenity
+	if [ $? = "0" ] ; then
+		echo "|--- Zenity encontrado!\n"
+	else
+		echo "|--- Zenity não encontrado. Deseja instalá-lo para continuar a usar o automatico.sh?!S/N\n"
+		read pode
+		if [ $pode = "S" -o $pode = "s" -o $pode = "SIM" -o $pode = "sim"];then
+			sudo apt-get install zenity
+		else
+			echo "|--- infelizmente não foi possivel instalá-lo. O Automático será abortado!"
+		fi
+	fi
+}
+
+function is_root()
+{
+	#Verifica se o usuário está como root caso contrário aborta execução
+	# do automatico.sh
+	if [ "`id -u`" != 0 ] ; then
+		zenity --error --title "ROOT necessário!" --text="Execute esse bash no seu terminal como:\n\n$ sudo bash ${arrayConfig[1]}"
+		exit
+	fi
+}
+
+function leitura_escrita_de_configuracao()
+{
+	#Função que verifica se as configuraçãoes estão salvas
+	#	no computador nesta pasta, caso não estejam então
+	#	será perguntado se ele deseja fazer essa gravação
+	#	para que futuramente ele possa recuperar essas
+	#	informações
+
+	if [ -e ".config_automatico" ]; then
+		#Se existe então carrega para dentro do array "arrayConfig"
+		#	todas as informações que possui no sistema		
+		a=0
+		while read linha 
+		do 
+			echo $linha
+			arrayConfig[$a]="${linha}"
+			let a++
+		done < .config_automatico
+	else
+		#Caso não encontre o arquivo ele perguntará se pode criar
+		#	um arquivo de configuração
+		aaa=$(zenity --question --title ".config_automatico" --text "Deseja salvar as configuraçõs atuais para futuros commits?!")
+		if [ ${?} = 0 ]; then
+			touch .config_automatico
+			chmod 777 .config_automatico
+			for item in "${arrayConfig[@]}"; do
+				echo "${item}" >> .config_automatico
+			done
+			aaa=$(zenity --info --text="Ok! Agora suas configurações foram salvas.")
+		fi
+	fi
+
+}
 
 function cabeca()
 {
@@ -37,7 +110,6 @@ function cabeca()
 		echo "---------------------------------------------------------"
 	fi
 }
-
 function criar_automatico()
 {
 	# Função responsável pela configuração e criação do automatico.sh
@@ -449,7 +521,9 @@ function ferramentas()
 
 #---------------------------------------------------------------------------------------------
 #--------------------------------------- Programa --------------------------------------------
-
+zenity_esta_instalado
+is_root
+leitura_escrita_de_configuracao
 if [ $autoself -eq 1 ]; then
 	# Parte responsável pela execução do AUTOMATICO.SH
 	run=true

@@ -1,3 +1,13 @@
+ATENÇÃO: Utilize o arquivo 'creator.sh', pois o arquivo 'gitHubAutomatico.sh' se encontra
+	em desenvolvimento e sua utilização é desencorajada
+	
+
+Versão 1.9.1(unstable)
+		Implementação
+			Criação do arquivo gitHubAutomatico.sh - Reformulação do  antigo creator.sh 
+			que agora contará com uma interface gráfica gerada pelo zenity.
+		Obs.: Pulo nas versões por modificações drasticas que haverá no sistema
+
 Versão 1.0.1
 		Implementação
 			Git Add

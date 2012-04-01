@@ -1,0 +1,64 @@
+1. O que é o GitHubAutomatico.sh
+	Baseado em Bash + Zenity serve como auxílio de configuração do seu projeto GitHub no seu computador.
+	Pode ser executado em forma 'live' que não altera o seu sistema ou então gerar todo o suporte mínimo
+	para que você agilize o processo de commit no GitHub
+	
+	1.1 Requerimentos
+		A - Sistema Operacional Ubuntu
+		B - Pacote instalado Zenity (Caso não o tenha GitHub - Automatico auxília na instalação)
+		C - Que você já tenha uma conta GitHub e que esta já tenha um projeto
+		
+	1.1 Como executar o GitHub - Automatico
+		Para executá-lo precisa apenas que você já tenha um projeto feito no GitHub, com isso basta
+		abrir seu terminal e digitar:
+			$ sudo bash gitHubAutomatico.sh
+		a partir desse momento você estará sendo guiado pelo próprio sistema para fazer as configurações
+		ou realizando o commit
+
+
+
+2. Arquivos do GitHub - Automatico
+	2.1 automatico.sh (beta)
+		Antigo sistema em bash para commit de arquivos. Contém apenas as funções básicas
+		e posteriomente incorpado no creator.sh para melhorar sua funcionalidade. Desencorajado
+		o seu uso por apresentar muitas falhas
+	2.1 creator.sh (Versão 1)
+		Arquivo que pode ser usado como um comunicador entre seu projeto e o GitHub. Ele permite
+		ser executado em uma versão 'live' sem qualquer modificação do seu sistema ou gerar um
+		arquivo 'automatico.sh' que será usado para o commit no seu projeto. O creator.sh gera
+		para você outro bash (automatico.sh) que conterá sua configuração, também cria um arquivo
+		'.config_automatico' que contém as configurações do sistema do GitHub - Automatico
+	2.2 GitHubAutomatico.sh (Versão 2)
+		Automatico é a segunda versão do creator.sh porém não contém a sua configuração dentro do 
+		próprio bash, mas gera um arquivo com as configurações. Permite como nos projetos anteriores
+		executar em uma versão 'live' ou criação do projeto em si.
+		2.2.1 .config_automatico
+			O arquivo ".config_automatico" contém as configuraçãoes do projeto gerado pelo GitHubAutomatico.sh
+			vamos então entender o que cada linha corresponde para o sistema
+				_________________________________________________________________________________________________
+				| Linha	|  Exemplo	| CORRESPONDENTE															|
+				|   0	|   0.9 	| Versão do sistema															|	
+				|   1	|   creator.sh	| Esse identificador identifica se é o Creator ou Automatico			|
+				|   2	|   Y   	| Garante que haverá a execução do programa mesmo existindo o automatico.	|
+				|   3	|   Tit		| "GitHub Creator - Automatico" ou "GitHub Creator - Executador"			|
+				|   4	|   user  	| Nome do Usuário no GitHub deste projeto									|
+				|   5	|   proj  	| O nome do projeto alocado no GitHub										|
+				|   6	|			|																			|
+				|		|			|																			|
+				|_______________________________________________________________________________________________|
+			Cada um dessas linha dessa tabela representa uma posição dentro do arrayConfig usado pelo GitHubAutomatico.sh
+3 Modos do GitHubAutomatico.sh
+	O GitHub - Automático está apto a realizar tarefas básicas e que possam ser consideradas de rotina
+	facilitando assim o processo no terminal para aqueles que não estão adpatados a ele ou que desejam fazer
+	a comunicação ser mais automático.
+	
+	3.1 Modo GitHub - Creator
+		O 'GitHub - Creator' ou 'live' permite que seja realizado modificações e commits sem que o sistema do seu git no seu computador
+		seja afetado. Trás ferramentas básicas como "commit", "git status" e etc. Também através do modo live você
+		poderá criar e instalar um gitHubAutomatico.sh configurado unicamente para o seu projeto atual.
+	3.2 Modo GitHub - Automatico
+		O modo automatico é feito quando o sistema já está configurado para o seus projeto. Isso lhe dará ferramentas a mais para que você
+		possa contar com maior facilidade no seu projeto.
+	
+	Obs.: O creator.sh contém as duas informações acima, porém, o automatico.sh (versão mais antiga) não está de acordo com essa divisão de
+	modos
