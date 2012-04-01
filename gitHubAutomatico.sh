@@ -378,10 +378,8 @@ function git_push()
 	git add ${arrayConfig[6]};
 	nome=$(zenity --title "${titulo}" --entry --text "Insira o nome para o seu commit" --entry-text="versao")
 	git commit -m ${nome// /_};
-	echo "- Commintando...                                        -"
-	git push origin master
-	echo "---------------------------------------------------------"
-	read nada
+	echo "GitHubAutomatico - Commitando os arquivos..."
+	git push origin master >> .log.txt
 }
 
 function git_pull()
@@ -389,7 +387,7 @@ function git_pull()
 	# Função usado no git para puxar os arquivos
 	
 	echo "- Github Pull...                                        -"
-	sudo git pull git@github.com:${user}/${project}.git master
+	sudo git pull git@github.com:${arrayConfig[3]}/${arrayConfig[4]}.git master
 	echo "---------------------------------------------------------"
 	read nada
 }
