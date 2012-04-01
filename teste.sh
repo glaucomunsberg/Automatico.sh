@@ -63,26 +63,6 @@ function zenity_func()
         fi
 	
 }
-(
-echo "10" ; sleep 1
-        echo "# Atualizando os registros do correio" ; sleep 1
-        echo "20" ; sleep 1
-        echo "# Reconfigurando os trabalhos do cron" ; sleep 1
-        echo "50" ; sleep 1
-        echo "Esta linha será simplesmente ignorada" ; sleep 1
-        echo "75" ; sleep 1
-        echo "# Reiniciando o sistema" ; sleep 1
-        echo "100" ; sleep 1
-        ) | zenity --progress \
-          --title="Registro de atualizações do sistema" \
-          --text="Varrendo os registros de correio..." \
-          --percentage=0
-
-        if [ "$?" = -1 ] ; then
-                zenity --error \
-                  --text="Atualização cancelada."
-        fi
-
 function is_root()
 {
 	#Verifica se o usuário está como root caso contrário aborta execução
@@ -91,3 +71,6 @@ function is_root()
 		zenity --error --title "ROOT necessário!" --text="Execute esse bash no seu terminal como:\n\n$ sudo bash ${arrayConfig[1]}"
 	fi
 }
+returno= grep -c "Already up-to-date." .log
+echo $retorno
+

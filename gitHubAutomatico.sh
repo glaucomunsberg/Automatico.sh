@@ -379,17 +379,31 @@ function git_push()
 	nome=$(zenity --title "${titulo}" --entry --text "Insira o nome para o seu commit" --entry-text="versao")
 	git commit -m ${nome// /_};
 	echo "GitHubAutomatico - Commitando os arquivos..."
-	echo git push origin master >> .log.txt
+	#Antes de enviar ele apaga o log e com o comando >& ele vai mandar todas
+	# as linhas que gerou para o arquivo .log
+	touch .log
+	echo git push origin master >& .log
+
 }
 
 function git_pull()
 {
 	# Função usado no git para puxar os arquivos
+	# detecta se está tudo ok ou não
 	
-	echo "- Github Pull...                                        -"
-	sudo git pull git@github.com:${arrayConfig[3]}/${arrayConfig[4]}.git master
-	echo "---------------------------------------------------------"
-	read nada
+	
+	echo "GitHubAutomatico - Puxando arquivos"
+	touch .log
+	sudo git pull git@github.com:${arrayConfig[3]}/${arrayConfig[4]}.git master >& .log
+	
+	returno= grep -c "Already up-to-date." .log
+	#Se e não foi encontrado então é pq foi enviado algo
+	if [ ${retorno} != "1" ]; then
+		zenity --text-info --title="${titulo} log"--width=500 \ --height=400 --filename=".log"
+	else
+		zenity --info --text="Already up-to-date."
+	fi
+	
 }
 
 function ssh_key()
