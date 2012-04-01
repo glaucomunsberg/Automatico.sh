@@ -16,31 +16,36 @@
 #	  Bem-vindo ao código criado para automatizar o processo do GitHub
 #		Olhe e modifique ao seu gosto!
 
+# -----Identificadores
+#	Array de Configuracao (arrayConfig)
+# 		0 - Versão do sistema
+# 		1 - Primeira Execucao 1 sim 0 não
+#		2 - Se já foi lido os dados de usuário e projeto
+#		3 - Nome do Usuário
+#		4 - Nome do projeto
+#		5 - Ultima vez utilizado
+#		6 - Regra de qual arquivos pode ser adicionado
+#
+#	Array de Titulo (ArrayTitulo)
+#		0 - Se está no modo live
+#		1 - Se está no modo automatico
 
-#--- Identificadores
-arrayConfig=("0.9" "creator.sh" "Y" "0" "titulo" "" "")
-version="0.9"         	# Versão do GitHub Creator
-lido=0                	# Verifica se já foi lido o nome do usuário e do projeto
-exec="Y"         	#Garante que haverá a execução do programa mesmo existindo o automatico.
-autoself="0"	        #Esse identificador identifica se é o Creator ou Automatico
-titulo="titulo"		#Titulo do programa
-#	user			#Descomentado no Automatico.sh para conter o nome do usuário do Github
-#	project			#Desbloqueado no Automatico.sh para conter o nome do projeto do Github
+arrayConfig=("1.9.1(unstable)" "1" "0" "" "" "01-04-2012" "*.*")
+arrayTitulo=("GitHubAutomatico (live)" "GitHubAutomatico")
+titulo=""
 
 #---------------------------------------------------------------------------------------------
 #---------------------------------------- Funções --------------------------------------------
-
-
 
 function zenity_esta_instalado()
 {	
 	#Função que verifica se o Zenity está instado no sistema caso não encontre
 	#	vai tentar instalar com o consentimento do usuário
-	
-	echo "|--- Verificando se o zenity está instado no seus sistema..."
+	echo "GitHubAutomatico - Verificando se o zenity está instado no seus sistema..."
 	dpkg -l | grep zenity
 	if [ $? = "0" ] ; then
 		echo "|--- Zenity encontrado!\n"
+		clear
 	else
 		echo "|--- Zenity não encontrado. Deseja instalá-lo para continuar a usar o automatico.sh?!S/N\n"
 		read pode
@@ -57,22 +62,22 @@ function is_root()
 	#Verifica se o usuário está como root caso contrário aborta execução
 	# do automatico.sh
 	if [ "`id -u`" != 0 ] ; then
+		echo "Você não é root! Esse bash precisa de privilégios"
 		zenity --error --title "ROOT necessário!" --text="Execute esse bash no seu terminal como:\n\n$ sudo bash ${arrayConfig[1]}"
 		exit
 	fi
 }
 
-function leitura_escrita_de_configuracao()
+function leitura_de_configuracao()
 {
-	#Função que verifica se as configuraçãoes estão salvas
-	#	no computador nesta pasta, caso não estejam então
-	#	será perguntado se ele deseja fazer essa gravação
-	#	para que futuramente ele possa recuperar essas
-	#	informações
+	# Verifica se tem informações sobre o projeto no
+	#	.config_automatico e envia as informações para
+	#	o arrayConfig
 
 	if [ -e ".config_automatico" ]; then
 		#Se existe então carrega para dentro do array "arrayConfig"
-		#	todas as informações que possui no sistema		
+		#	todas as informações que possui no sistema	
+		echo "GitHubAutomatico - Fazendo o uplado do arquivo .config_automatico"	
 		a=0
 		while read linha 
 		do 
@@ -80,10 +85,16 @@ function leitura_escrita_de_configuracao()
 			arrayConfig[$a]="${linha}"
 			let a++
 		done < .config_automatico
+		clear
 	else
-		#Caso não encontre o arquivo ele perguntará se pode criar
-		#	um arquivo de configuração
-		aaa=$(zenity --question --title ".config_automatico" --text "Deseja salvar as configuraçõs atuais para futuros commits?!")
+		aaa=$(zenity --info --text="Não existe um arquivo de configuracao!")
+		echo "GitHubAutomatico - Atenção! Não existe o arquivo .config_automatico!"
+	fi
+}
+
+function gravar_configuracoes()
+{
+		aaa=$(zenity --question --title ".config_automatico" --text "Deseja salvar as configuraçõs atuais?!")
 		if [ ${?} = 0 ]; then
 			touch .config_automatico
 			chmod 777 .config_automatico
@@ -91,25 +102,24 @@ function leitura_escrita_de_configuracao()
 				echo "${item}" >> .config_automatico
 			done
 			aaa=$(zenity --info --text="Ok! Agora suas configurações foram salvas.")
+			echo "GitHubAutomatico - Configurações salvas em .config_automatico!"
+		else
+			echo "GitHubAutomatico - Configurações não salvas"
 		fi
-	fi
-
 }
 
-function cabeca()
+function gerar_titulo()
 {
 	# Função que printa o cabeçalho
 	
-	if [ $autoself -eq 1 ]; then
-		echo "---------------------------------------------------------"
-		echo "             GitHub Creator - Automatico                 "
-		echo "---------------------------------------------------------"
+	if [ ${arrayConfig[1]} -eq "1" ]; then
+		titulo=${arrayTitulo[0]}
 	else
-		echo "---------------------------------------------------------"
-		echo "             GitHub Creator - Executador                 "
-		echo "---------------------------------------------------------"
+		titulo=${arrayTitulo[1]}
 	fi
+	echo "GitHubAutomatico - Titulo atribuido"
 }
+
 function criar_automatico()
 {
 	# Função responsável pela configuração e criação do automatico.sh
@@ -187,7 +197,7 @@ function criar_automatico()
 	
 }
 
-function executar()
+function modo_live()
 {
 	
 	# Função deficada apenas a executar funções basicas
@@ -198,25 +208,15 @@ function executar()
 	#     lido, sendo lido passa direto para as funções.
 	#	caso contrário vai ler os valores
 					
-	if [ $lido = "0" ]; then
+	if [ ${arrayConfig[2]} = 0 ]; then
 		leitura
 	fi
-	clear
-	cabeca
-	echo "- No executar não é feita nenhuma configuração.         -"
-	echo "-   portando  para que funcione é preciso que o  gitHub -"
-	echo "-   já esteja previamente funcionando neste local.      -"
-	echo "-                                                       -" 
-	echo "- 1.Push                                                -"
-	echo "- 2.Pull                                                -"
-	echo "- 0.Sair                                                -"
-	read commit
-	if [ $commit -eq 1 ]; then
+	echo "GitHubAutomatico - Modo live está em execução"
+	commit=$(zenity --title="${titulo}"  --entry --text "No live não é feita nenhuma configuração\n	Portanto para que funcione é necessário que o gitHub\n	já esteja previamente funcionando nesse local. Escolha a opção\n\n1 - Push\n2 - Pull\n	0 - Sair")
+	if [ ${commit} = 1 ]; then
 		git_push
-	elif [ $commit -eq 2 ]; then
+	elif [ ${commit} = 2 ]; then
 		git_pull
-	else
-		echo "- Retornando...                                         -"
 	fi
 		
 }
@@ -225,21 +225,8 @@ function about()
 {
 	# Função que trás informações a respeito do projeto
 	
-	clear
-	cabeca
-	echo "- GitHub Creator  é  um programa  para que  você  possa -"
-	echo "-    automatizar  tarefas  rotineiras do GitHub no  seu -"
-	echo "-    terminal. Possibilitando a  execução apenas  ou  a -"
-	echo "-    criação deu um automatico.sh para fazer isso.      -"
-	echo "-                                                       -"
-	echo "- O projeto pode ser baixado no seguinte link           -"
-	echo "-     Http://github.com/glaucomunsberg/Automatico       -"
-	echo "- Versão:                                               -"
-	echo "-     $version	                                        -"
-	echo "- Criado por:                                           -"
-	echo "-     Glauco Roberto Munsberg dos Santos                -"
-	echo "---------------------------------------------------------"
-	read nada
+	texto="- O GitHubAutomatico é um programa em Bash que automatiza a suas tarefas no gitHub. Pode ser executado de forma \'live\' ou personalizar para seu projeto sem necessitar de reconfigurar novamente!\n\nO projeto pode ser baixado no seguinte link:\n	Http://github.com/glaucomunsberg/Automatico\nSua Versão:\n	${arrayConfig[0]}\nCriado por:\n	Glauco Roberto Munsberg dos Santos\n\nUltima Modificação na configuracao:\n	${arrayConfig[5]}"
+	FILE=$(zenity --info --height=100 --width=450 --title="${titulo} - Sobre" --text="${texto}")
 }
 
 function sair()
@@ -247,64 +234,58 @@ function sair()
 	# Função que simplifica o processo de saida
 	
 	clear
-	cabeca
-	echo "- Saindo...                                             -"
-	echo "---------------------------------------------------------"
-	sleep 1;
+	aaa=$(zenity --info --timeout=1 --text="Saindo do sistema...")
 	clear;
 	exit;
 }
 
 function leitura()
 {
+	#Função que faz a leitura das informações de nome e projeto
+	# A função primeiro entra em um loop até que "certo" seja verdadeiro
+	# para que isso ocorra então a leitura do nome e do projeto
+	# tem que ser diferente de nulo.
 	certo=false
 	while [ $certo = false ]; do
-		clear
-		cabeca
-		#ler o USER
-		echo "- 2) Qual é o seu usuário do GitHub?                    -"
 		leu=false
 		certo=false
 		
+		#ler o nome do USUARIO e manda para arrayConfig[3]
+		echo "GitHubAutomatico - Fazendo a leitura do nome do usuário"
 		while [ $leu = false ]; do
-			read user
-			if [ -n "$user" ];then
+			arrayConfig[3]=$(zenity --title "${titulo}" --entry --text "Por favor para continuar, digite seu nome de USUÁRIO do github")
+			if [ -n "${arrayConfig[3]}" ];then
 				leu=true
 			fi
 		done
 		
-		#ler o PROJECT
+		#ler o nome do PROJETO e manda para arrayConfig[4]
 		lido=0
-		echo "- 3) Qual é o nome do projeto no GitHub?                -"
 		leu=false
-		
+		echo "GitHubAutomatico - Fazendo a leitura do nome do projeto"
 		while [ $leu = false ]; do
-			read project
-			if [ -n "$project" ];then
+			arrayConfig[4]=$(zenity --title "${titulo}" --entry --text "Por favor para continuar, digite seu nome do seu PROJETO do github")
+			if [ -n "${arrayConfig[4]}" ];then
 				leu=true
 			fi
 		done
 		
-		clear
-		cabeca
-		if [ $autoself -eq 1 ]; then
-			echo "- Ok.  Confira  os  dados,  pois  o  automatico.sh será -"
-			echo "-    criado com os seguintes dados:                     -"
+		#Demonstra para o usuário as informações que ele passou e pede para confirmar.
+		#	O texto é diferente para facilitar caso o usuário já tenha configurado antes
+		if [ ${arrayConfig[1]} -eq 1 ]; then
+			confirma=$(zenity --question --title="${titulo}" --text "Ok. Confira os dados, pois o gitHubAutomatico será\n configurado com as seguintes informações\n\nGitHub usuário:	${arrayConfig[3]}\nGitHub projeto:	${arrayConfig[4]}\n\nOs dados estão certos?!")
 		else
-			echo "- OK. Confira os dados para continuar:                  -"
+			confirma=$(zenity --question --title="${titulo}" --text "Ok. Confira os dados para continuar.\nGitHub usuário:	${arrayConfig[3]}\n\nGitHub projeto:	${arrayConfig[4]}\n\nOs dados estão certos?!")
 		fi
-		echo "-                                                       -"
-		echo "-    USER    = $user"
-		echo "-    PROJETO = $project"
-		echo "-                                                       -"
-		echo "- Os dados estão corretos?! Y/N                         -"
-		read tudo
-		
-		if [ $tudo = "Y" -o $tudo = "y" ]; then
+		if [ $? = "0" ]; then
 			certo=true
+			echo "GitHubAutomatico - Nome de usuário e projeto feita com sucesso"
+		else
+			${arrayConfig[3]}=""
+			${arrayConfig[4]}=""
 		fi
 	done
-	lido=1
+	arrayConfig[2]="1"
 }
 function criacao_projeto()
 {
@@ -313,22 +294,16 @@ function criacao_projeto()
 	#	do mesmo. Possibilita a criação de uma pasta para conter o
 	#   projeto e configura a pasta segundo o projeto que será descarregado
 	
-	clear
-	cabeca
 	echo "- Ok.  Porém  é preciso de algumas informações:         -"
 	echo "-    1) Seu projeto já teve algum commit? Y/N           -"
 	read existe
 	
 	if [ $existe = "Y" -o $existe = "y" ]; then
-		clear
-		cabeça
 
 		echo "- Ok.  Vamos  criar  TUDO, ou  seja, configuraremos seu -"
 		echo "-    projeto, criaremos seu automatico  e seu  primeiro -"
 		echo "-    commit. Mas antes disso vamos trazer seus arquivos -"
 	else
-		clear
-		cabeca
 		echo "- Ok.  Vamos  criar  TUDO, ou  seja, configuraremos seu -"
 		echo "-    projeto, criaremos seu automatico  e seu  primeiro -"
 		echo "-    commit.                                            -"
@@ -342,8 +317,6 @@ function criacao_projeto()
 		leitura
 	fi
 	
-	clear
-	cabeca
 	echo "- 4) Deseja criar uma pasta para os arquivos? Y/N.      -"
 	read criarpasta
 	
@@ -393,22 +366,17 @@ function criacao_projeto()
 
 function git_push()
 {
-	#Função contendo o Push, utilizado no github para empurrar os arquivos
-	
-	clear
-	cabeca
-	echo "- Deseja inserir algo no README? Y/N                    -"
-	read opcao;
-
-	if [ $opcao = "Y" -o $opcao = "y" ]; then
+	#Função contendo o Push, 
+	#	utilizado no github para empurrar os arquivos
+	echo "GitHubAutomatico - Executando um Push"
+	opcao=$(zenity --question --title="${titulo}" --text "Deseja alterar o conteúdo do README?")
+	if [ $? = "0" ]; then
 		gedit README
 	fi
 	
-	echo "- Carregando os arquivos...                             -"
 	git add README
-	git add *.*
-	echo "- Insira o nome do commit:                              -"
-	read nome
+	git add ${arrayConfig[6]};
+	nome=$(zenity --title "${titulo}" --entry --text "Insira o nome para o seu commit" --entry-text="versao")
 	git commit -m ${nome// /_};
 	echo "- Commintando...                                        -"
 	git push origin master
@@ -420,8 +388,6 @@ function git_pull()
 {
 	# Função usado no git para puxar os arquivos
 	
-	clear;
-	cabeca
 	echo "- Github Pull...                                        -"
 	sudo git pull git@github.com:${user}/${project}.git master
 	echo "---------------------------------------------------------"
@@ -432,8 +398,6 @@ function ssh_key()
 {
 	# Função para que se possa resetar o SSH e após fazer isso
 	#     testa a conexão com o github
-	clear;
-	cabeca
 	echo "- Resetar SSH..                                         -"
 	sudo systemctl restart sshd.service
 	sleep 1
@@ -446,8 +410,6 @@ function git_remove()
 {
 	# Função que deleta os arquivos escolhidos nomeados pelo usuário
 	
-	clear
-	cabeca
 	echo "- Digite os arquivos que deseja deletar:                -"
 	read removendo
 	sudo git rm ${removendo}
@@ -460,8 +422,6 @@ function git_remove()
 function git_test()
 {
 	# Função de teste de conexão do projeto com o GitHub
-	clear;
-	cabeca
 	echo "---------------------------------------------------------"
 	echo "- Teste de Conexão com o GitHub...                      -"
 	sudo ssh -T git@github.com
@@ -473,8 +433,6 @@ function git_add()
 {
 	# Função que adiciona os arquivos escolhidos nomeados pelo usuário
 	
-	clear
-	cabeca
 	echo "- Digite os arquivos que deseja adicionar:              -"
 	read adicionar
 	sudo git add ${adicionar}
@@ -489,8 +447,6 @@ function git_status()
 	# Função de status do estado que se encontra os arquivo em relação
 	#     ao estado do repositório segundo o último push/pull
 	
-	clear
-	cabeca
 	echo "--------------------------------------------------------"
 	echo "- Git Status...                                        -"
 	sudo git status
@@ -503,9 +459,6 @@ function ferramentas()
 	# Função que contém as ferramentas aninhadas para melhore ser
 	#     melhor organizado o menu do automatico.sh. Trás nele a
 	#     coleção de ferramentas integradas.
-	
-	clear
-	cabeca
 	echo "- 1. Git Remove                                         -"
 	echo "- 2. Git Status                                         -"
 	echo "- 3. Git Test                                           -"
@@ -521,78 +474,33 @@ function ferramentas()
 
 #---------------------------------------------------------------------------------------------
 #--------------------------------------- Programa --------------------------------------------
+
+
 zenity_esta_instalado
 is_root
-leitura_escrita_de_configuracao
-if [ $autoself -eq 1 ]; then
-	# Parte responsável pela execução do AUTOMATICO.SH
-	run=true
-	while [ $run = true ]; do
-		
-		clear
-		cabeca
-		echo "- 1. Push                                               -"
-		echo "- 2. Pull                                               -"
-		echo "- 3. Ferramentas                                        -"
-		echo "- 0. Sair                                               -"
-		leu=false
-		while [ $leu = false ]; do
-			read commit
-			if [ -n "$user" ];then
-				leu=true
-			fi
-		done
-		case $commit in
-			0) sair;;
-			1) git_push;;
-			2) git_pull;;
-			3) ferramentas;;
-		esac
-	done
-else
-	# Parte responsável pela execução do CREATOR.SH
-	if [ -e "automatico.sh" ]; then
-		clear
-		cabeca
-		echo "- O automatico.sh do projeto já existe. Isso quer dizer -"
-		echo "-    que o projeto já foi configurado nessa pasta.  Por -"
-		echo "-    isso deve usá-lo.                                  -"
-		echo "-    Deseja executar assim mesmo?! Y/N                  -"
-		read exec
-		
-		if [ $exec != "N" -o $exec != "n" ]; then
-			sair
-		fi
-	fi
 
-	if [ $exec = "Y" -o $exec = "y" ]; then
-		run=true
-		while [ $run = true ]; do
-			clear
-			cabeca
-			echo "- 1. Executar sem criar um automatico.sh                -"
-			echo "- 2. Criar um automatico.sh para seu projeto.           -"
-			echo "- 3. Sobre GitHub Creator                               -"
-			echo "- 4. Sair                                               -"
-			read opcao
-			if [ $opcao -ge 4 ]; then
-				sair
-			else
-				if [ $opcao -eq 3 ]; then
-					about
-				else
-					
-					#Executa o projeto apenas ou cria então o automatico.sh
-					#     segundo valor de opcao
-					
-					if [ $opcao -eq 2 ]; then
-						criar_automatico
-					else
-						executar
-					fi
-	
-				fi
-			fi
-		done
-	fi
+if [ -e ".config_automatico" ]; then
+		#Existe configuracao
+		leitura_de_configuracao
+		gerar_titulo
+		aaa=$(zenity --info --title="${titulo}" --width=300 --timeout=2  --text "Suas configurações foram carregas com sucesso!")
+		#....
+		
+		
+	else
+		#Não existe Configuracao pergunta se quer executar em modo live ou criar projeto
+		gerar_titulo
+		oQueFazer=$(zenity 	--title="${titulo}" \
+						--width=300 \
+						--entry --text "Bem-Vindo ao GitHubAutomatico!\n\n	1 - Rodar em Modo Live\n	2 - Criar um gitHubAutomatico.sh\n	3 - Sobre\n	4 - Sair")	
+		if [ "${?}" = "1" ]; then
+			sair
+		else
+			case $oQueFazer in
+				1) modo_live;;
+				2) criar_automatico;;
+				3) about;;
+				4) sair;;
+			esac
+		fi
 fi

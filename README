@@ -1,6 +1,12 @@
-ATENÇÃO: Utilize o arquivo 'creator.sh', pois o arquivo 'gitHubAutomatico.sh' se encontra
-	em desenvolvimento e sua utilização é desencorajada
-	
+ATENÇÃO: 
+automatico(antigo).sh	- Versão 0.1 - Versão ANTIGA
+creator.sh				- Versão 1.0 - Versão CORRENTE
+githubAutomatico.sh		- Versão 1.9 - Unstable!!!
+
+Versão 1.9.2
+		Implementação
+			Modo live sendo modificado para o modo interface.
+			Remoção dos demais módulos
 
 Versão 1.9.1(unstable)
 		Implementação

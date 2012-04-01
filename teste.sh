@@ -38,7 +38,50 @@ function zenity_func()
 	#Erro
 	aaa=$(zenity --error --title "ROOT necessário!" --text="Execute esse bash no seu terminal como")
 	
+	#Informativo
+	aaa=$(zenity --info --text="Mesclagem completa. Foram atualizados 3 de 10 arquivos.")
+	
+	#Para de progresso
+	(
+		echo "10" ; sleep 1
+        echo "# Atualizando os registros do correio" ; sleep 1
+        echo "20" ; sleep 1
+        echo "# Reconfigurando os trabalhos do cron" ; sleep 1
+        echo "50" ; sleep 1
+        echo "Esta linha será simplesmente ignorada" ; sleep 1
+        echo "75" ; sleep 1
+        echo "# Reiniciando o sistema" ; sleep 1
+        echo "100" ; sleep 1
+        ) | zenity --progress \
+          --title="Registro de atualizações do sistema" \
+          --text="Varrendo os registros de correio..." \
+          --percentage=0
+
+        if [ "$?" = -1 ] ; then
+                zenity --error \
+                  --text="Atualização cancelada."
+        fi
+	
 }
+(
+echo "10" ; sleep 1
+        echo "# Atualizando os registros do correio" ; sleep 1
+        echo "20" ; sleep 1
+        echo "# Reconfigurando os trabalhos do cron" ; sleep 1
+        echo "50" ; sleep 1
+        echo "Esta linha será simplesmente ignorada" ; sleep 1
+        echo "75" ; sleep 1
+        echo "# Reiniciando o sistema" ; sleep 1
+        echo "100" ; sleep 1
+        ) | zenity --progress \
+          --title="Registro de atualizações do sistema" \
+          --text="Varrendo os registros de correio..." \
+          --percentage=0
+
+        if [ "$?" = -1 ] ; then
+                zenity --error \
+                  --text="Atualização cancelada."
+        fi
 
 function is_root()
 {
@@ -48,5 +91,3 @@ function is_root()
 		zenity --error --title "ROOT necessário!" --text="Execute esse bash no seu terminal como:\n\n$ sudo bash ${arrayConfig[1]}"
 	fi
 }
-aaa=$(zenity --question --title "Cuidado !" --text "Usuário encontrado, deseja removê-lo ?")
-echo $?

@@ -38,12 +38,12 @@
 				_________________________________________________________________________________________________
 				| Linha	|  Exemplo	| CORRESPONDENTE															|
 				|   0	|   0.9 	| Versão do sistema															|	
-				|   1	|   creator.sh	| Esse identificador identifica se é o Creator ou Automatico			|
-				|   2	|   Y   	| Garante que haverá a execução do programa mesmo existindo o automatico.	|
+				|   1	| "creator" | Titulo do automatico														|
+				|   2	|   1   	| 1 se é primeria execucao e 0 se é configuracao							|
 				|   3	|   Tit		| "GitHub Creator - Automatico" ou "GitHub Creator - Executador"			|
 				|   4	|   user  	| Nome do Usuário no GitHub deste projeto									|
 				|   5	|   proj  	| O nome do projeto alocado no GitHub										|
-				|   6	|			|																			|
+				|   6	|			| Se já foi lido os dados do usuario (user e projeto) 1 sim 0 não			|
 				|		|			|																			|
 				|_______________________________________________________________________________________________|
 			Cada um dessas linha dessa tabela representa uma posição dentro do arrayConfig usado pelo GitHubAutomatico.sh
