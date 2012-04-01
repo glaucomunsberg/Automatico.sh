@@ -1,5 +1,4 @@
 #!/bin/bash
-arrayConfig=("0.9" "creator.sh" "Y" "0" "titulo" "" "")
 function leituraDeArquivo()
 {
 	a=0
@@ -72,5 +71,9 @@ function is_root()
 	fi
 }
 returno= grep -c "Already up-to-date." .log
-echo $retorno
+if [ "$retorno" = 1 ]; then
+	echo ""
+else
+	echo "aaaa :/"
+fi
 

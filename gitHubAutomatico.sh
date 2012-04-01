@@ -30,7 +30,7 @@
 #		0 - Se está no modo live
 #		1 - Se está no modo automatico
 
-arrayConfig=("1.9.1(unstable)" "1" "0" "" "" "01-04-2012" "*.*")
+arrayConfig=("1.9.1(unstable)" "1" "1" "glaucomunsberg" "Automatico.sh" "01-04-2012" "*.*")
 arrayTitulo=("GitHubAutomatico (live)" "GitHubAutomatico")
 titulo=""
 
@@ -377,12 +377,16 @@ function git_push()
 	git add README
 	git add ${arrayConfig[6]};
 	nome=$(zenity --title "${titulo}" --entry --text "Insira o nome para o seu commit" --entry-text="versao")
-	git commit -m ${nome// /_};
-	echo "GitHubAutomatico - Commitando os arquivos..."
-	#Antes de enviar ele apaga o log e com o comando >& ele vai mandar todas
-	# as linhas que gerou para o arquivo .log
-	touch .log
-	echo git push origin master >& .log
+	if [ $? != "1" ]; then
+		git commit -m ${nome// /_};
+		echo "GitHubAutomatico - Commitando os arquivos..."
+		#Antes de enviar ele apaga o log e com o comando >& ele vai mandar todas
+		# as linhas que gerou para o arquivo .log
+		touch .log
+		git push origin master >& .log
+	else
+		zenity --info --title="${titulo}" --text="Commit abortado!"
+	fi
 
 }
 
@@ -396,12 +400,12 @@ function git_pull()
 	touch .log
 	sudo git pull git@github.com:${arrayConfig[3]}/${arrayConfig[4]}.git master >& .log
 	
-	returno= grep -c "Already up-to-date." .log
+	retorno= grep "Already up-to-date." .log
 	#Se e não foi encontrado então é pq foi enviado algo
-	if [ ${retorno} != "1" ]; then
-		zenity --text-info --title="${titulo} log"--width=500 \ --height=400 --filename=".log"
-	else
+	if [ "$retorno" = 1  ]; then
 		zenity --info --text="Already up-to-date."
+	else
+		zenity --text-info --title="${titulo} log"--width=500 \ --height=400 --filename=".log"
 	fi
 	
 }
