@@ -30,7 +30,7 @@
 #		0 - Se está no modo live
 #		1 - Se está no modo automatico
 
-arrayConfig=("1.9.1(unstable)" "1" "1" "glaucomunsberg" "Automatico.sh" "01-04-2012" "*.*")
+arrayConfig=("1.9.1(unstable)" "1" "0" "" "" "01-04-2012" "*.*")
 arrayTitulo=("GitHubAutomatico (live)" "GitHubAutomatico")
 titulo=""
 
@@ -373,11 +373,11 @@ function git_push()
 	if [ $? = "0" ]; then
 		gedit README
 	fi
-	
-	git add README
-	git add ${arrayConfig[6]};
+	#Coleta o nome do comit e faz as atribuições caso seja cancelado nada será feito
 	nome=$(zenity --title "${titulo}" --entry --text "Insira o nome para o seu commit" --entry-text="versao")
 	if [ $? != "1" ]; then
+		git add README
+		git add ${arrayConfig[6]};
 		git commit -m ${nome// /_};
 		echo "GitHubAutomatico - Commitando os arquivos..."
 		#Antes de enviar ele apaga o log e com o comando >& ele vai mandar todas
@@ -407,7 +407,6 @@ function git_pull()
 	else
 		zenity --text-info --title="${titulo} log"--width=500 \ --height=400 --filename=".log"
 	fi
-	
 }
 
 function ssh_key()
